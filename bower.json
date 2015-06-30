@@ -1,0 +1,19 @@
+{
+  "name": "breakout",
+  "version": "0.0.0",
+  "authors": [
+    "Alan Kydd <akydd@ualberta.net>"
+  ],
+  "description": "Breakout clone",
+  "moduleType": [
+    "amd"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "src/libs"
+  ],
+  "dependencies": {
+      "phaser": "2.2.2",
+      "requirejs": "latest"
+  }
+}
