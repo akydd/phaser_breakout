@@ -1,24 +1,17 @@
-define(['phaser'], function(Phaser) {
+define(['phaser', 'phaser-game'], function(Phaser, game) {
     'use strict';
 
     function Game() {
     };
 
     Game.prototype = {
-        constructor: Game,
-        start: function() {
-            this.game = new Phaser.Game(520, 600, Phaser.AUTO, 'game-div', {
-                create: this.create,
-                update: this.update
-            });
-        },
         create: function() { 
-            this.game.physics.startSystem(Phaser.Physics.ARCADE);
+            game.physics.startSystem(Phaser.Physics.ARCADE);
             // no collisions on the "floor"
-            this.game.physics.arcade.checkCollision.down = false;
+            game.physics.arcade.checkCollision.down = false;
 
             // the blocks
-            this.blocks = this.game.add.group();
+            this.blocks = game.add.group();
             this.blocks.enableBody = true;
             this.blocks.physicsBodyType = Phaser.Physics.ARCADE;
 
@@ -54,15 +47,15 @@ define(['phaser'], function(Phaser) {
             }
 
             // the paddle (50w x 10h)
-            this.paddle = this.game.add.sprite(this.game.world.centerX - 25, this.game.world.height - 10, 'paddle');
-            this.game.physics.arcade.enable(this.paddle);
+            this.paddle = game.add.sprite(game.world.centerX - 25, game.world.height - 10, 'paddle');
+            game.physics.arcade.enable(this.paddle);
             // paddle should not move when ball hits it
             this.paddle.body.immovable = true;
             this.paddle.body.collideWorldBounds = true;
 
             // the ball (8x8)
-            this.ball = this.game.add.sprite(this.game.world.centerX - 4, this.paddle.body.y - 8, 'ball');
-            this.game.physics.enable(this.ball);
+            this.ball = game.add.sprite(game.world.centerX - 4, this.paddle.body.y - 8, 'ball');
+            game.physics.enable(this.ball);
             // the ball should bounce off the edges of the world
             this.ball.body.collideWorldBounds = true;
             this.ball.body.bounce.x = 1;
@@ -73,13 +66,13 @@ define(['phaser'], function(Phaser) {
 
             // the score
             var style = { font: "20px Arial", fill: "#000000" };  
-            var scoreText = this.game.add.text(20, 20, "Score: 0", style);
+            var scoreText = game.add.text(20, 20, "Score: 0", style);
 
             // lives
-            var livesText = this.game.add.text(20, 40, "Lives: 3", style);
+            var livesText = game.add.text(20, 40, "Lives: 3", style);
 
             // get ready for keyboard input
-            this.cursors = this.game.input.keyboard.createCursorKeys();
+            this.cursors = game.input.keyboard.createCursorKeys();
         },
 
         update: function() {
@@ -100,10 +93,10 @@ define(['phaser'], function(Phaser) {
             }
 
             // ball paddle collision
-            this.game.physics.arcade.collide(this.ball, this.paddle, bounceOffPaddle, null, this);
+            game.physics.arcade.collide(this.ball, this.paddle, bounceOffPaddle, null, this);
 
             // ball block collision
-            this.game.physics.arcade.collide(this.ball, this.blocks, hitBlock, null, this);
+            game.physics.arcade.collide(this.ball, this.blocks, hitBlock, null, this);
         }
     };
 
@@ -128,7 +121,7 @@ function ballLost() {
     if (lives == 0) {
         score = 0;
         lives = 3;
-        this.game.state.start('Menu');
+        game.state.start('Menu');
     }
 }
 
@@ -153,7 +146,7 @@ function hitBlock(ball, block) {
 
             // Testing powerup
             var powerup  = this.game.add.sprite(block.x, block.y, 'disrupt');
-            this.game.physics.enable(powerup);
+            game.physics.enable(powerup);
             powerup.body.velocity.y = 200;
             // handle lost balls 
             powerup.checkWorldBounds = true;

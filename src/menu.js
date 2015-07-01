@@ -1,14 +1,19 @@
-Arkanoid.Menu = function(game) {
-};
+define(['phaser-game'], function(game) {
+    'use strict';
 
-Arkanoid.Menu.prototype = {
-    create: function() {
-        game.add.text(20,20, "Arkanoid", { font: "20px Arial", fill: "#000000" });
-        this.cursor = this.game.input.keyboard.createCursorKeys();
-    },
+    function Menu() {
+    };
 
-    update: function() {
-        if (this.cursor.up.isDown)
-            this.state.start('Game');
-    }
-};
+    Menu.prototype = {
+        create: function() {
+            game.add.text(20,20, "Arkanoid", { font: "20px Arial", fill: "#777777" });
+            this.cursor = game.input.keyboard.createCursorKeys();
+        },
+        update: function() {
+            if (this.cursor.up.isDown)
+                game.state.start('Game');
+        }
+    };
+
+    return Menu;
+});

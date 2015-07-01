@@ -13,9 +13,23 @@
         }
     });
 
-    require(['phaser', 'game'], function (Phaser, Game) {
-        var game = new Game();
-        game.start();
+    require([
+        'phaser',
+        'phaser-game',
+        'load',
+        'menu',
+        'game'
+    ], function (
+        Phaser,
+        Game,
+        Load,
+        Menu,
+        Play
+    ) {
+        Game.state.add('Load', Load);
+        Game.state.add('Menu', Menu);
+        Game.state.add('Game', Play);
+        Game.state.start('Load');
     });
 
 }());
