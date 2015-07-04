@@ -1,4 +1,12 @@
-define(['phaser', 'phaser-game'], function(Phaser, game) {
+define([
+    'phaser',
+    'phaser-game',
+    'brick'
+], function(
+    Phaser, 
+    game,
+    Brick
+) {
     'use strict';
 
     function Game() {
@@ -16,34 +24,22 @@ define(['phaser', 'phaser-game'], function(Phaser, game) {
             this.blocks.physicsBodyType = Phaser.Physics.ARCADE;
 
             for(var j = 0; j < 13; j++) {
-                var block = this.blocks.create(j * 40, 80, 'block_silver');
-                block.body.immovable = true;
-                block.health = 2;
+                this.blocks.add(new Brick(game, j * 40, 80, 'silver'));
             }
             for(var j = 0; j < 13; j++) {
-                var block = this.blocks.create(j * 40, 100, 'block_red');
-                block.body.immovable = true;
-                block.health = 1;
+                this.blocks.add(new Brick(game, j * 40, 100, 'red'));
             }
             for(var j = 0; j < 13; j++) {
-                var block = this.blocks.create(j * 40, 120, 'block_yellow');
-                block.body.immovable = true;
-                block.health = 1;
+                this.blocks.add(new Brick(game, j * 40, 120, 'yellow'));
             }
             for(var j = 0; j < 13; j++) {
-                var block = this.blocks.create(j * 40, 140, 'block_blue');
-                block.body.immovable = true;
-                block.health = 1;
+                this.blocks.add(new Brick(game, j * 40, 140, 'blue'));
             }
             for(var j = 0; j < 13; j++) {
-                var block = this.blocks.create(j * 40, 160, 'block_pink');
-                block.body.immovable = true;
-                block.health = 1;
+                this.blocks.add(new Brick(game, j * 40, 160, 'pink'));
             }
             for(var j = 0; j < 13; j++) {
-                var block = this.blocks.create(j * 40, 180, 'block_green');
-                block.body.immovable = true;
-                block.health = 1;
+                this.blocks.add(new Brick(game, j * 40, 180, 'green'));
             }
 
             // the paddle (50w x 10h)
