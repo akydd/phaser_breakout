@@ -14,43 +14,49 @@ define([
 
     Game.prototype = {
         create: function() { 
+            game.add.sprite(0, 0, 'background');
+
             game.physics.startSystem(Phaser.Physics.ARCADE);
             // no collisions on the "floor"
             game.physics.arcade.checkCollision.down = false;
 
             // the blocks
+            var blockX = 40;
+            var blockY = 20;
+            var cols = 13;
+
             this.blocks = game.add.group();
             this.blocks.enableBody = true;
             this.blocks.physicsBodyType = Phaser.Physics.ARCADE;
 
-            for(var j = 0; j < 13; j++) {
-                this.blocks.add(new Brick(game, j * 40, 80, 'silver'));
+            for(var j = 0; j < cols; j++) {
+                this.blocks.add(new Brick(game, j * blockX, 80, 'silver'));
             }
-            for(var j = 0; j < 13; j++) {
-                this.blocks.add(new Brick(game, j * 40, 100, 'red'));
+            for(var j = 0; j < cols; j++) {
+                this.blocks.add(new Brick(game, j * blockX, 100, 'red'));
             }
-            for(var j = 0; j < 13; j++) {
-                this.blocks.add(new Brick(game, j * 40, 120, 'yellow'));
+            for(var j = 0; j < cols; j++) {
+                this.blocks.add(new Brick(game, j * blockX, 120, 'yellow'));
             }
-            for(var j = 0; j < 13; j++) {
-                this.blocks.add(new Brick(game, j * 40, 140, 'blue'));
+            for(var j = 0; j < cols; j++) {
+                this.blocks.add(new Brick(game, j * blockX, 140, 'blue'));
             }
-            for(var j = 0; j < 13; j++) {
-                this.blocks.add(new Brick(game, j * 40, 160, 'pink'));
+            for(var j = 0; j < cols; j++) {
+                this.blocks.add(new Brick(game, j * blockX, 160, 'pink'));
             }
-            for(var j = 0; j < 13; j++) {
-                this.blocks.add(new Brick(game, j * 40, 180, 'green'));
+            for(var j = 0; j < cols; j++) {
+                this.blocks.add(new Brick(game, j * blockX, 180, 'green'));
             }
 
-            // the paddle (50w x 10h)
-            this.paddle = game.add.sprite(game.world.centerX - 25, game.world.height - 10, 'paddle');
+            // the paddle (100w x 22h)
+            this.paddle = game.add.sprite(game.world.centerX - 50, game.world.height - 25, 'paddle');
             game.physics.arcade.enable(this.paddle);
             // paddle should not move when ball hits it
             this.paddle.body.immovable = true;
             this.paddle.body.collideWorldBounds = true;
 
-            // the ball (8x8)
-            this.ball = game.add.sprite(game.world.centerX - 4, this.paddle.body.y - 8, 'ball');
+            // the ball (20x20)
+            this.ball = game.add.sprite(game.world.centerX - 10, this.paddle.body.y - 22, 'ball');
             this.ballOnPaddle = true;
             game.physics.enable(this.ball);
             // the ball should bounce off the edges of the world
@@ -87,7 +93,7 @@ define([
             }
 
             if (this.ballOnPaddle) {
-                this.ball.body.x = this.paddle.body.x + this.paddle.body.halfWidth - 4;
+                this.ball.body.x = this.paddle.body.x + this.paddle.body.halfWidth - 11;
             }
 
             // ball paddle collision
@@ -153,7 +159,7 @@ define([
             this.lives--;
             this.livesText.text = "Lives: " + this.lives;
 
-            this.ball.reset(this.paddle.body.x, this.paddle.body.y - 8);
+            this.ball.reset(this.paddle.body.x + 50, this.paddle.body.y - 22);
             this.ballOnPaddle = true;
 
             if (this.lives == 0) {

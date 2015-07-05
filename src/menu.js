@@ -6,6 +6,8 @@ define(['phaser-game'], function(game) {
 
     Menu.prototype = {
         create: function() {
+            game.add.sprite(0, 0, 'background');
+
             game.add.text(20,20, "Arkanoid", { font: "20px Arial", fill: "#777777" });
             this.cursor = game.input.keyboard.createCursorKeys();
         },

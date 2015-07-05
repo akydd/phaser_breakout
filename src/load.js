@@ -6,8 +6,8 @@ define(['phaser-game'], function(game) {
 
     Load.prototype = {
         preload: function() {
-            game.stage.backgroundColor = '#71c5cf';
-            game.load.image('ball', 'assets/ball.png');
+            game.load.image('background', 'assets/background.jpg');
+            game.load.image('ball', 'assets/ball_silver2.png');
             game.load.image('block_white', 'assets/bricks/white.png');
             game.load.image('block_orange', 'assets/bricks/orange.png');
             game.load.image('block_turquoise', 'assets/bricks/turquoise.png');
@@ -18,7 +18,7 @@ define(['phaser-game'], function(game) {
             game.load.image('block_yellow', 'assets/bricks/yellow.png');
             game.load.image('block_silver', 'assets/bricks/silver.png');
             game.load.image('block_gold', 'assets/bricks/gold.png');
-            game.load.image('paddle', 'assets/paddle.png');
+            game.load.image('paddle', 'assets/bat_black2.png');
             game.load.image('disrupt', 'assets/powerups/disrupt.png');
         },
         create: function() {
