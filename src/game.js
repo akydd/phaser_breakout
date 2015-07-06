@@ -21,34 +21,22 @@ define([
             game.physics.arcade.checkCollision.down = false;
 
             // the blocks
-            var blockX = 40;
-            var blockY = 20;
-            var cols = 13;
+            var blockX = 77;
+            var padding = 3;
+            var blockY = 35;
+            var cols = 10;
+            var firstColY = 80;
 
             this.blocks = game.add.group();
             this.blocks.enableBody = true;
             this.blocks.physicsBodyType = Phaser.Physics.ARCADE;
 
-            for(var j = 0; j < cols; j++) {
-                this.blocks.add(new Brick(game, j * blockX, 80, 'silver'));
-            }
-            for(var j = 0; j < cols; j++) {
-                this.blocks.add(new Brick(game, j * blockX, 100, 'red'));
-            }
-            for(var j = 0; j < cols; j++) {
-                this.blocks.add(new Brick(game, j * blockX, 120, 'yellow'));
-            }
-            for(var j = 0; j < cols; j++) {
-                this.blocks.add(new Brick(game, j * blockX, 140, 'blue'));
-            }
-            for(var j = 0; j < cols; j++) {
-                this.blocks.add(new Brick(game, j * blockX, 160, 'pink'));
-            }
-            for(var j = 0; j < cols; j++) {
-                this.blocks.add(new Brick(game, j * blockX, 180, 'green'));
+            for(var i = 0; i < 4; i++) {
+                for(var j = 0; j < cols; j++) {
+                    this.blocks.add(new Brick(game, (j + 1) * padding + j * blockX, firstColY + i * padding + i * blockY, 'blue'));
+                }
             }
 
-            // the paddle (100w x 22h)
             this.paddle = game.add.sprite(game.world.centerX - 50, game.world.height - 25, 'paddle');
             game.physics.arcade.enable(this.paddle);
             // paddle should not move when ball hits it
