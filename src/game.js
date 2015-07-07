@@ -16,10 +16,6 @@ define([
         create: function() { 
             game.add.sprite(0, 0, 'background');
 
-            game.physics.startSystem(Phaser.Physics.ARCADE);
-            // no collisions on the "floor"
-            game.physics.arcade.checkCollision.down = false;
-
             // the blocks
             var blockX = 77;
             var padding = 3;
