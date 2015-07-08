@@ -12,7 +12,7 @@ module.exports = function(grunt) {
             }
         },
         jshint: {
-            files: ['Gruntfile.js', 'src/js/**/*.js']
+            files: ['Gruntfile.js', 'src/**/*.js', '!src/libs/**/*.js']
         },
         watch: {
             files: ['<%=jshint.files %>'],
