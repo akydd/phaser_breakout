@@ -53,12 +53,12 @@ define([
 
             // the score
             this.score = 0;
-            var style = { font: "20px Arial", fill: "#000000" };  
-            this.scoreText = game.add.text(20, 20, "Score: " + this.score, style);
+            var textStyle = {font: '20px karmatic_arcaderegular', fill: '#000000'};
+            this.scoreText = game.add.text(20, 20, "Score: " + this.score, textStyle);
 
             // lives
             this.lives = 3;
-            this.livesText = game.add.text(20, 40, "Lives: " + this.lives, style);
+            this.livesText = game.add.text(20, 40, "Lives: " + this.lives, textStyle);
 
             // get ready for keyboard input
             this.cursors = game.input.keyboard.createCursorKeys();

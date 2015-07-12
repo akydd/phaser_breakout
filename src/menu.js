@@ -18,9 +18,11 @@ define(['phaser-game'], function(game) {
             emitter.setXSpeed(0, 0);
             emitter.start(false, 3000, 500);
 
-            game.add.text(20, 20, "Breakout", {font: '80px karmatic_arcaderegular', fill: '#000000'});
-            game.add.text(20, 120, "Up arrow to start", {font: '20px karmatic_arcaderegular', fill: '#000000'});
-            game.add.text(20, 160, "Left and right arrows to move", {font: '20px karmatic_arcaderegular', fill: '#000000'});
+            var titleStyle = {font: '80px karmatic_arcaderegular', fill: '#000000'};
+            var textStyle = {font: '20px karmatic_arcaderegular', fill: '#000000'};
+            game.add.text(20, 20, "Breakout", titleStyle);
+            game.add.text(20, 120, "Up arrow to start", textStyle);
+            game.add.text(20, 160, "Left and right arrows to move", textStyle);
 
             this.cursor = game.input.keyboard.createCursorKeys();
         },
