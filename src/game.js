@@ -54,14 +54,28 @@ define([
             // the score
             this.score = 0;
             var textStyle = {font: '20px karmatic_arcaderegular', fill: '#000000'};
-            this.scoreText = game.add.text(20, 20, "Score: " + this.score, textStyle);
+            this.scoreText = game.add.text(20, 20, "Score " + this.score, textStyle);
 
             // lives
             this.lives = 3;
-            this.livesText = game.add.text(20, 40, "Lives: " + this.lives, textStyle);
+            this.livesText = game.add.text(20, 50, "Lives " + this.lives, textStyle);
 
             // get ready for keyboard input
             this.cursors = game.input.keyboard.createCursorKeys();
+            this.pauseKey = game.input.keyboard.addKey(Phaser.Keyboard.P);
+            this.pauseKey.onDown.add(this.pause, this);
+        },
+        pause: function() {
+            if (game.paused) {
+                game.paused = false;
+                this.pauseText.destroy();
+            } else {
+                game.paused = true;
+                var textStyle = {font: '80px karmatic_arcaderegular', fill: '#000000'};
+                this.pauseText = game.add.text(401, 300, "Paused", textStyle);
+                this.pauseText.anchor.x = 0.5;
+                this.pauseText.anchor.y = 0.5;
+            }
         },
         update: function() {
             // paddle motion
@@ -81,7 +95,7 @@ define([
             }
 
             // ball paddle collision
-            game.physics.arcade.collide(this.ball, this.paddle, bounceOffPaddle, null, this);
+            game.physics.arcade.collide(this.ball, this.paddle, null, null, this);
 
             // ball block collision
             game.physics.arcade.collide(this.ball, this.blocks, this.hitBlock, null, this);
@@ -154,8 +168,3 @@ define([
 
     return Game;
 });
-
-function bounceOffPaddle() {
-    // the physics are handled by the framework.
-    // TODO: play 'bounce' sound
-}

@@ -20,9 +20,19 @@ define(['phaser-game'], function(game) {
 
             var titleStyle = {font: '80px karmatic_arcaderegular', fill: '#000000'};
             var textStyle = {font: '20px karmatic_arcaderegular', fill: '#000000'};
-            game.add.text(20, 20, "Breakout", titleStyle);
-            game.add.text(20, 120, "Up arrow to start", textStyle);
-            game.add.text(20, 160, "Left and right arrows to move", textStyle);
+
+            var titleText = game.add.text(game.world.centerX, game.world.centerY, "Breakout", titleStyle);
+            titleText.anchor.x = 0.5;
+            titleText.anchor.y = 0.5;
+
+            var controlsString = "Up arrow to start\nLeft and right arrows to move\n'P' to pause";
+            var controlsText = game.add.text(game.world.centerX, game.world.centerY + 100, controlsString, textStyle);
+            controlsText.anchor.x = 0.5;
+            controlsText.anchor.y = 0.5;
+
+            var creditText = game.add.text(game.world.centerX, game.world.centerY + 200, "Artwork by www.unluckystudio.com", textStyle);
+            creditText.anchor.x = 0.5;
+            creditText.anchor.y = 0.5;
 
             this.cursor = game.input.keyboard.createCursorKeys();
         },
