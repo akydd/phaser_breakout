@@ -10,6 +10,10 @@ define(['phaser-game'], function(game) {
 
             // game.physics.startSystem(Phaser.Physics.ARCADE);
 
+            // start sound
+            var backgroundTrack = game.add.audio('track');
+            backgroundTrack.play(null, 0, 0.6, true, false);
+
             var emitter = game.add.emitter(game.world.centerX, -35, 5);
             emitter.width = game.world.width;
             emitter.makeParticles(['block_blue', 'block_pink', 'block_green', 'block_yellow', 'block_violet']);

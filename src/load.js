@@ -22,6 +22,7 @@ define(['phaser-game'], function(game) {
             game.load.image('block_violet', 'assets/bricks/violet.png');
             game.load.image('paddle', 'assets/bat_black2.png');
             game.load.image('disrupt', 'assets/powerups/disrupt.png');
+            game.load.audio('track', 'assets/audio/track.mp3');
         },
         create: function() {
             game.state.start('Menu');
