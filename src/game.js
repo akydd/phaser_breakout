@@ -33,6 +33,7 @@ define([
                 }
             }
 
+            // the paddle
             this.paddle = game.add.sprite(game.world.centerX - 50, game.world.height - 25, 'paddle');
             game.physics.arcade.enable(this.paddle);
             // paddle should not move when ball hits it
@@ -64,6 +65,9 @@ define([
             this.cursors = game.input.keyboard.createCursorKeys();
             this.pauseKey = game.input.keyboard.addKey(Phaser.Keyboard.P);
             this.pauseKey.onDown.add(this.pause, this);
+
+            // sounds
+            this.bump = game.add.audio('bump');
         },
         pause: function() {
             if (game.paused) {
@@ -95,7 +99,7 @@ define([
             }
 
             // ball paddle collision
-            game.physics.arcade.collide(this.ball, this.paddle, null, null, this);
+            game.physics.arcade.collide(this.ball, this.paddle, this.hitPaddle, null, this);
 
             // ball block collision
             game.physics.arcade.collide(this.ball, this.blocks, this.hitBlock, null, this);
@@ -106,6 +110,9 @@ define([
             // paddle
             this.ball.body.velocity.x = 177 + this.paddle.body.velocity.x;
             this.ball.body.velocity.y = -177;
+        },
+        hitPaddle: function() {
+            this.bump.play();
         },
         hitBlock: function(ball, block) {
             block.damage(1);

@@ -10,8 +10,8 @@ define(['phaser-game'], function(game) {
 
             // game.physics.startSystem(Phaser.Physics.ARCADE);
 
-            // start sound
-            var backgroundTrack = game.add.audio('track');
+            game.sound.destroy();
+            var backgroundTrack = game.add.sound('track');
             backgroundTrack.play(null, 0, 0.6, true, false);
 
             var emitter = game.add.emitter(game.world.centerX, -35, 5);
