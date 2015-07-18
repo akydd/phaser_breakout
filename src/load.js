@@ -24,6 +24,7 @@ define(['phaser-game'], function(game) {
             game.load.image('disrupt', 'assets/powerups/disrupt.png');
             game.load.audio('track', 'assets/audio/track.mp3', true);
             game.load.audio('bump', 'assets/audio/bump.ogg', true);
+            game.load.audio('block_hit', 'assets/audio/block_hit.ogg', true);
         },
         update: function() {
             if (game.cache.isSoundDecoded('track')) {

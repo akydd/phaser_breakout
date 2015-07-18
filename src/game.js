@@ -68,6 +68,7 @@ define([
 
             // sounds
             this.bump = game.add.audio('bump');
+            this.blockHit = game.add.audio('block_hit');
         },
         pause: function() {
             if (game.paused) {
@@ -108,24 +109,22 @@ define([
             this.ballOnPaddle = false;
             // release at pi/4, angular velocity of 250, plus horizontal velocity of
             // paddle
-            this.ball.body.velocity.x = 177 + this.paddle.body.velocity.x;
+            this.ball.body.velocity.x = 177;
             this.ball.body.velocity.y = -177;
         },
         hitPaddle: function() {
             this.bump.play();
         },
         hitBlock: function(ball, block) {
+            this.blockHit.play();
             block.damage(1);
 
             switch(block.key) {
-                case 'block_white':
-                    this.score += 50;
+                case 'block_blue':
+                    this.score += 100;
                     break;
-                case 'block_orange':
-                    this.score += 60;
-                    break;
-                case 'block_turquoise':
-                    this.score += 70;
+                case 'block_pink':
+                    this.score += 110;
                     break;
                 case 'block_green':
                     this.score += 80;
@@ -140,22 +139,12 @@ define([
                     //powerup.events.onOutOfBounds.add(ballLost, this);
 
                     break;
-                case 'block_red':
-                    this.score += 90;
-                    break;
-                case 'block_blue':
-                    this.score += 100;
-                    break;
-                case 'block_pink':
-                    this.score += 110;
-                    break;
                 case 'block_yellow':
                     this.score += 120;
                     break;
-                case 'block_silver':
-                    if (!block.alive) {
-                        this.score += 50;
-                    }
+                case 'block_violet':
+                    this.score += 90;
+                    break;
             }
 
             this.scoreText.text = "Score: " + this.score;
@@ -164,12 +153,22 @@ define([
             this.lives--;
             this.livesText.text = "Lives: " + this.lives;
 
-            this.ball.reset(this.paddle.body.x + 50, this.paddle.body.y - 22);
-            this.ballOnPaddle = true;
-
             if (this.lives == 0) {
-                game.state.start('Menu');
+                this.gameOver();
+            } else {
+                this.ball.reset(this.paddle.body.x + 50, this.paddle.body.y - 22);
+                this.ballOnPaddle = true;
             }
+        },
+        gameOver: function() {
+            var textStyle = {font: '80px karmatic_arcaderegular', fill: '#000000'};
+            var gameOverText = game.add.text(401, 300, "Game Over!", textStyle);
+            gameOverText.anchor.x = 0.5;
+            gameOverText.anchor.y = 0.5;
+
+            game.time.events.add(Phaser.Timer.SECOND * 4, function() {
+                game.state.start('Menu');
+            }, this);
         }
     };
 
