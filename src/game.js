@@ -1,11 +1,13 @@
 define([
     'phaser',
     'phaser-game',
-    'brick'
+    'brick',
+    'levels'
 ], function(
     Phaser, 
     game,
-    Brick
+    Brick,
+    Levels
 ) {
     'use strict';
 
@@ -13,25 +15,30 @@ define([
     };
 
     Game.prototype = {
-        create: function() { 
-            game.add.sprite(0, 0, 'background');
-
-            // the blocks
+        buildLevel: function(level) {
+            // the blocks dimensions and starting positions at top left
             var blockX = 77;
             var padding = 3;
             var blockY = 35;
-            var cols = 10;
             var firstColY = 80;
+
+            for(var i = 0; i < level.length; i++) {
+                for(var j = 0; j < level[i].length; j++) {
+                    var blockType = level[i][j];
+                    if (blockType) {
+                        this.blocks.add(new Brick(game, (j + 1) * padding + j * blockX, firstColY + i * padding + i * blockY, 'blue'));
+                    }
+                }
+            }
+        },
+        create: function() { 
+            game.add.sprite(0, 0, 'background');
 
             this.blocks = game.add.group();
             this.blocks.enableBody = true;
             this.blocks.physicsBodyType = Phaser.Physics.ARCADE;
 
-            for(var i = 0; i < 4; i++) {
-                for(var j = 0; j < cols; j++) {
-                    this.blocks.add(new Brick(game, (j + 1) * padding + j * blockX, firstColY + i * padding + i * blockY, 'blue'));
-                }
-            }
+            this.buildLevel(Levels.getLevel(0));
 
             // the paddle
             this.paddle = game.add.sprite(game.world.centerX - 50, game.world.height - 25, 'paddle');

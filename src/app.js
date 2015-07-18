@@ -19,14 +19,16 @@
         'boot',
         'load',
         'menu',
-        'game'
+        'game',
+        'levels'
     ], function (
         Phaser,
         Game,
         Boot,
         Load,
         Menu,
-        Play
+        Play,
+        Levels
     ) {
         Game.state.add('Boot', Boot);
         Game.state.add('Load', Load);
