@@ -26,7 +26,7 @@ define([
                 for(var j = 0; j < level[i].length; j++) {
                     var blockType = level[i][j];
                     if (blockType) {
-                        this.blocks.add(new Brick(game, (j + 1) * padding + j * blockX, firstColY + i * padding + i * blockY, 'blue'));
+                        this.blocks.add(new Brick(game, (j + 1) * padding + j * blockX, firstColY + i * padding + i * blockY, blockType));
                     }
                 }
             }
@@ -38,7 +38,7 @@ define([
             this.blocks.enableBody = true;
             this.blocks.physicsBodyType = Phaser.Physics.ARCADE;
 
-            this.buildLevel(Levels.getLevel(0));
+            this.buildLevel(Levels.getLevel(1));
 
             // the paddle
             this.paddle = game.add.sprite(game.world.centerX - 50, game.world.height - 25, 'paddle');
