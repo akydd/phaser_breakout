@@ -125,17 +125,10 @@ define([
         hitBlock: function(ball, block) {
             this.blockHit.play();
             block.damage(1);
+            this.score += block.score;
 
             switch(block.key) {
-                case 'block_blue':
-                    this.score += 100;
-                    break;
-                case 'block_pink':
-                    this.score += 110;
-                    break;
                 case 'block_green':
-                    this.score += 80;
-
                     // Testing powerup
                     var powerup  = game.add.sprite(block.x, block.y, 'disrupt');
                     game.physics.enable(powerup);
@@ -144,13 +137,6 @@ define([
                     powerup.checkWorldBounds = true;
                     // replace this with outOfBounds.kill = true;
                     //powerup.events.onOutOfBounds.add(ballLost, this);
-
-                    break;
-                case 'block_yellow':
-                    this.score += 120;
-                    break;
-                case 'block_violet':
-                    this.score += 90;
                     break;
             }
 

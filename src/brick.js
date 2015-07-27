@@ -7,18 +7,23 @@ define(['phaser'], function(Phaser) {
         switch(blockType) {
             case 'b':
                 Phaser.Sprite.call(this, game, x, y, 'block_blue');
+                this.score = 100;
                 break;
             case 'p':
                 Phaser.Sprite.call(this, game, x, y, 'block_pink');
+                this.score = 110;
                 break;
             case 'g':
                 Phaser.Sprite.call(this, game, x, y, 'block_green');
+                this.score = 80;
                 break;
             case 'y':
                 Phaser.Sprite.call(this, game, x, y, 'block_yellow');
+                this.score = 120;
                 break;
             case 'v':
                 Phaser.Sprite.call(this, game, x, y, 'block_violet');
+                this.score = 90;
                 break;
         }
         
