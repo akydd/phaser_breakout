@@ -15,6 +15,7 @@ define([
     };
 
     Game.prototype = {
+        currentLevel: 0,
         buildLevel: function(level) {
             // the blocks dimensions and starting positions at top left
             var blockX = 77;
@@ -37,8 +38,6 @@ define([
             this.blocks = game.add.group();
             this.blocks.enableBody = true;
             this.blocks.physicsBodyType = Phaser.Physics.ARCADE;
-
-            this.buildLevel(Levels.getLevel(1));
 
             // the paddle
             this.paddle = game.add.sprite(game.world.centerX - 50, game.world.height - 25, 'paddle');
@@ -89,7 +88,33 @@ define([
                 this.pauseText.anchor.y = 0.5;
             }
         },
+        ready: function() {
+            var textStyle = {font: '80px karmatic_arcaderegular', fill: '#000000'};
+            var nextLevelText = game.add.text(401, 300, "Ready!", textStyle);
+            nextLevelText.anchor.x = 0.5;
+            nextLevelText.anchor.y = 0.5;
+        
+            // after two seconds, reenable and redisplay the ball and paddle
+            game.time.events.add(Phaser.Timer.SECOND * 2, function() {
+                nextLevelText.destroy();
+                this.paddle.reset(game.world.centerX - 50, game.world.height - 25);
+                this.ball.reset(this.paddle.body.x + 50, this.paddle.body.y - 22);
+                this.ballOnPaddle = true;
+            }, this);
+        },
         update: function() {
+            if (this.blocks.countLiving() === 0) {
+                // Load the next level
+                this.buildLevel(Levels.getLevel(this.currentLevel));
+                this.currentLevel++;
+
+                // disable ball & paddle
+                this.disableAll();
+
+                // Ready
+                this.ready();
+            }
+            
             // paddle motion
             this.paddle.body.velocity.x = 0;
             if (this.cursors.left.isDown) {
@@ -149,15 +174,26 @@ define([
             if (this.lives == 0) {
                 this.gameOver();
             } else {
-                this.ball.reset(this.paddle.body.x + 50, this.paddle.body.y - 22);
-                this.ballOnPaddle = true;
+                this.disableAll();
+                this.ready();
             }
         },
+        disableAll: function() {
+            // disable & hide ball & paddle
+            this.ball.visible = false;
+            this.paddle.visible = false;
+            this.ball.inputEnabled = false;
+            this.paddle.inputEnabled = false;            
+        },
         gameOver: function() {
+            this.disableAll();
+            
             var textStyle = {font: '80px karmatic_arcaderegular', fill: '#000000'};
             var gameOverText = game.add.text(401, 300, "Game Over!", textStyle);
             gameOverText.anchor.x = 0.5;
             gameOverText.anchor.y = 0.5;
+            
+            this.currentLevel = 0;
 
             game.time.events.add(Phaser.Timer.SECOND * 4, function() {
                 game.state.start('Menu');
