@@ -2,12 +2,14 @@ define([
     'phaser',
     'phaser-game',
     'brick',
-    'levels'
+    'levels',
+    'powerup'
 ], function(
     Phaser, 
     game,
     Brick,
-    Levels
+    Levels,
+    Powerup
 ) {
     'use strict';
 
@@ -35,6 +37,7 @@ define([
         create: function() { 
             game.add.sprite(0, 0, 'background');
 
+            // blocks
             this.blocks = game.add.group();
             this.blocks.enableBody = true;
             this.blocks.physicsBodyType = Phaser.Physics.ARCADE;
@@ -150,22 +153,20 @@ define([
         hitBlock: function(ball, block) {
             this.blockHit.play();
             block.damage(1);
-            this.score += block.score;
 
-            switch(block.key) {
-                case 'block_green':
-                    // Testing powerup
-                    var powerup  = game.add.sprite(block.x, block.y, 'disrupt');
-                    game.physics.enable(powerup);
-                    powerup.body.velocity.y = 200;
-                    // handle lost balls 
-                    powerup.checkWorldBounds = true;
-                    // replace this with outOfBounds.kill = true;
-                    //powerup.events.onOutOfBounds.add(ballLost, this);
-                    break;
+            if (!block.alive) {
+                this.score += block.score;
+                this.scoreText.text = "Score: " + this.score;
+
+                // 1 in 5 chance for a powerup
+                if(game.rnd.integerInRange(1, 5) === 1) {
+                    this.dropPowerUp(block);
+                }
             }
-
-            this.scoreText.text = "Score: " + this.score;
+        },
+        dropPowerUp: function(block) {
+            var powerup = new Powerup(game, block.x, block.y, 'disrupt');
+            game.add.existing(powerup);
         },
         ballLost: function() {
             this.lives--;

@@ -2,8 +2,6 @@ define(['phaser'], function(Phaser) {
     "use strict";
 
     var Brick = function(game, x, y, blockType) {
-        var color;
-
         switch(blockType) {
             case 'b':
                 Phaser.Sprite.call(this, game, x, y, 'block_blue');
