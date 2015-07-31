@@ -121,9 +121,9 @@ define([
             // paddle motion
             this.paddle.body.velocity.x = 0;
             if (this.cursors.left.isDown) {
-                this.paddle.body.velocity.x = -350;
+                this.paddle.body.velocity.x = -400;
             } else if (this.cursors.right.isDown) {
-                this.paddle.body.velocity.x = 350;
+                this.paddle.body.velocity.x = 400;
             }
 
             if (this.cursors.down.isDown && this.ballOnPaddle) {
@@ -139,6 +139,9 @@ define([
 
             // ball block collision
             game.physics.arcade.collide(this.ball, this.blocks, this.hitBlock, null, this);
+
+            // powerup paddle collistion
+            game.physics.arcade.collide(this.powerup, this.paddle, this.hitPowerup, null, this);
         },
         releaseBall: function() {
             this.ballOnPaddle = false;
@@ -158,15 +161,22 @@ define([
                 this.score += block.score;
                 this.scoreText.text = "Score: " + this.score;
 
-                // 1 in 5 chance for a powerup
-                if(game.rnd.integerInRange(1, 5) === 1) {
+                // 1 in 4 chance for a powerup
+                if(game.rnd.integerInRange(1, 4) === 1) {
                     this.dropPowerUp(block);
                 }
             }
         },
         dropPowerUp: function(block) {
-            var powerup = new Powerup(game, block.x, block.y, 'disrupt');
-            game.add.existing(powerup);
+            var powerupTypes = ['disrupt', 'catch', 'laser'];
+            var powerupType = powerupTypes[game.rnd.integerInRange(0, 2)];
+            
+            this.powerup = new Powerup(game, block.x, block.y, powerupType);
+            game.add.existing(this.powerup);
+        },
+        hitPowerup: function(powerup) {
+            console.log(powerup.type);
+            powerup.kill();
         },
         ballLost: function() {
             this.lives--;

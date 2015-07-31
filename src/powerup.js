@@ -2,7 +2,8 @@ define(['phaser'], function(Phaser) {
     "use strict";
 
     var Powerup = function(game, x, y, type) {
-        Phaser.Sprite.call(this, game, x, y, 'disrupt');
+        this.type = type;
+        Phaser.Sprite.call(this, game, x, y, type);
 
         game.physics.arcade.enableBody(this);
         this.body.velocity.y = 200;

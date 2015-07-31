@@ -24,7 +24,9 @@ define(['phaser-game'], function(game) {
             
             game.load.image('paddle', 'assets/bat_black2.png');
             
-            game.load.image('disrupt', 'assets/powerups/disrupt.png');
+            game.load.image('disrupt', 'assets/powerups/star_yellow.png');
+            game.load.image('catch', 'assets/powerups/star_green.png');
+            game.load.image('laser', 'assets/powerups/star_red.png');
             game.load.audio('track', 'assets/audio/track.mp3', true);
             game.load.audio('bump', 'assets/audio/bump.ogg', true);
             game.load.audio('block_hit', 'assets/audio/block_hit.ogg', true);
