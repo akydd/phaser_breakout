@@ -3,13 +3,15 @@ define([
     'phaser-game',
     'brick',
     'levels',
-    'powerup'
+    'powerup',
+    'ball'
 ], function(
     Phaser, 
     game,
     Brick,
     Levels,
-    Powerup
+    Powerup,
+    Ball
 ) {
     'use strict';
 
@@ -39,8 +41,6 @@ define([
 
             // blocks
             this.blocks = game.add.group();
-            this.blocks.enableBody = true;
-            this.blocks.physicsBodyType = Phaser.Physics.ARCADE;
 
             // the paddle
             this.paddle = game.add.sprite(game.world.centerX - 50, game.world.height - 25, 'paddle');
@@ -49,17 +49,18 @@ define([
             this.paddle.body.immovable = true;
             this.paddle.body.collideWorldBounds = true;
 
-            // the ball (20x20)
-            this.ball = game.add.sprite(game.world.centerX - 10, this.paddle.body.y - 22, 'ball');
-            this.ballOnPaddle = true;
-            game.physics.enable(this.ball);
-            // the ball should bounce off the edges of the world
-            this.ball.body.collideWorldBounds = true;
-            this.ball.body.bounce.x = 1;
-            this.ball.body.bounce.y = 1;
-            // handle lost balls 
-            this.ball.checkWorldBounds = true;
-            this.ball.events.onOutOfBounds.add(this.ballLost, this);
+            // 3 balls in total
+            this.balls = game.add.group();
+            var ballArray = [
+                new Ball(game, this.paddle.body.x - 50, this.paddle.body.y - 22),
+                new Ball(game, this.paddle.body.x - 50, this.paddle.body.y - 22),
+                new Ball(game, this.paddle.body.x - 50, this.paddle.body.y - 22)
+            ];
+            this.balls.addMultiple(ballArray);
+            this.balls.forEach(function(ball) {
+                ball.kill(); // They are not dead by default!
+                ball.events.onOutOfBounds.add(this.ballLost, this);
+            }, this);
 
             // the score
             this.score = 0;
@@ -93,16 +94,17 @@ define([
         },
         ready: function() {
             var textStyle = {font: '80px karmatic_arcaderegular', fill: '#000000'};
-            var nextLevelText = game.add.text(401, 300, "Ready!", textStyle);
-            nextLevelText.anchor.x = 0.5;
-            nextLevelText.anchor.y = 0.5;
+            var readyText = game.add.text(401, 300, "Ready!", textStyle);
+            readyText.anchor.x = 0.5;
+            readyText.anchor.y = 0.5;
         
-            // after two seconds, reenable and redisplay the ball and paddle
+            // after two seconds, reenable and redisplay the paddle and add a
+            // new ball to the group
             game.time.events.add(Phaser.Timer.SECOND * 2, function() {
-                nextLevelText.destroy();
+                readyText.destroy();
                 this.paddle.reset(game.world.centerX - 50, game.world.height - 25);
-                this.ball.reset(this.paddle.body.x + 50, this.paddle.body.y - 22);
                 this.ballOnPaddle = true;
+                this.balls.getChildAt(0).reset(this.paddle.body.x + 50, this.paddle.body.y - 22);
             }, this);
         },
         update: function() {
@@ -111,8 +113,7 @@ define([
                 this.buildLevel(Levels.getLevel(this.currentLevel));
                 this.currentLevel++;
 
-                // disable ball & paddle
-                this.disableAll();
+                this.disablePaddle();
 
                 // Ready
                 this.ready();
@@ -131,24 +132,24 @@ define([
             }
 
             if (this.ballOnPaddle) {
-                this.ball.body.x = this.paddle.body.x + this.paddle.body.halfWidth - 11;
+                var ball = this.balls.getChildAt(0);
+                ball.body.x = this.paddle.body.x + this.paddle.body.halfWidth - 11;
             }
 
             // ball paddle collision
-            game.physics.arcade.collide(this.ball, this.paddle, this.hitPaddle, null, this);
+            game.physics.arcade.collide(this.balls, this.paddle, this.hitPaddle, null, this);
 
             // ball block collision
-            game.physics.arcade.collide(this.ball, this.blocks, this.hitBlock, null, this);
+            game.physics.arcade.collide(this.balls, this.blocks, this.hitBlock, null, this);
 
             // powerup paddle collistion
             game.physics.arcade.collide(this.powerup, this.paddle, this.hitPowerup, null, this);
         },
         releaseBall: function() {
             this.ballOnPaddle = false;
-            // release at pi/4, angular velocity of 250, plus horizontal velocity of
-            // paddle
-            this.ball.body.velocity.x = 177;
-            this.ball.body.velocity.y = -177;
+            var activeBall = this.balls.getChildAt(0);
+            activeBall.body.velocity.x = 177;
+            activeBall.body.velocity.y = -177;
         },
         hitPaddle: function() {
             this.bump.play();
@@ -178,26 +179,27 @@ define([
             console.log(powerup.type);
             powerup.kill();
         },
-        ballLost: function() {
-            this.lives--;
-            this.livesText.text = "Lives: " + this.lives;
+        ballLost: function(ball) {
+            ball.kill();
 
-            if (this.lives == 0) {
-                this.gameOver();
-            } else {
-                this.disableAll();
-                this.ready();
+            if (this.balls.countLiving() === 0) {
+                this.lives--;
+                this.livesText.text = "Lives: " + this.lives;
+
+                if (this.lives == 0) {
+                    this.gameOver();
+                } else {
+                    this.disablePaddle();
+                    this.ready();
+                }
             }
         },
-        disableAll: function() {
-            // disable & hide ball & paddle
-            this.ball.visible = false;
+        disablePaddle: function() {
             this.paddle.visible = false;
-            this.ball.inputEnabled = false;
             this.paddle.inputEnabled = false;            
         },
         gameOver: function() {
-            this.disableAll();
+            this.disablePaddle();
             
             var textStyle = {font: '80px karmatic_arcaderegular', fill: '#000000'};
             var gameOverText = game.add.text(401, 300, "Game Over!", textStyle);
