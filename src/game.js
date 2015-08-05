@@ -21,11 +21,14 @@ define([
     Game.prototype = {
         currentLevel: 0,
         buildLevel: function(level) {
-            // the blocks dimensions and starting positions at top left
+            // the blocks dimensions and padding
             var blockX = 77;
-            var padding = 3;
             var blockY = 35;
+            var padding = 3;
             var firstColY = 80;
+
+            // clear out the old blocks
+            this.blocks.removeAll(true, true);
 
             for(var i = 0; i < level.length; i++) {
                 for(var j = 0; j < level[i].length; j++) {
@@ -98,8 +101,8 @@ define([
             readyText.anchor.x = 0.5;
             readyText.anchor.y = 0.5;
         
-            // after two seconds, reenable and redisplay the paddle and add a
-            // new ball to the group
+            // after two seconds, reenable and redisplay the paddle and a single
+            // ball
             game.time.events.add(Phaser.Timer.SECOND * 2, function() {
                 readyText.destroy();
                 this.paddle.reset(game.world.centerX - 50, game.world.height - 25);
@@ -114,6 +117,8 @@ define([
                 this.currentLevel++;
 
                 this.disablePaddle();
+                // there may be more than 1 ball in play.
+                this.disableActiveBalls();
 
                 // Ready
                 this.ready();
@@ -197,6 +202,11 @@ define([
         disablePaddle: function() {
             this.paddle.visible = false;
             this.paddle.inputEnabled = false;            
+        },
+        disableActiveBalls: function() {
+            this.balls.forEachAlive(function(ball) {
+                ball.kill();
+            });
         },
         gameOver: function() {
             this.disablePaddle();
