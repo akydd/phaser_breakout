@@ -46,7 +46,8 @@ define([
             this.blocks = game.add.group();
 
             // the paddle
-            this.paddle = game.add.sprite(game.world.centerX - 50, game.world.height - 25, 'paddle');
+            this.paddle = game.add.sprite(game.world.centerX, game.world.height - 25, 'paddle');
+            this.paddle.anchor.setTo(0.5);
             game.physics.arcade.enable(this.paddle);
             // paddle should not move when ball hits it
             this.paddle.body.immovable = true;
@@ -55,9 +56,9 @@ define([
             // 3 balls in total
             this.balls = game.add.group();
             var ballArray = [
-                new Ball(game, this.paddle.body.x - 50, this.paddle.body.y - 22),
-                new Ball(game, this.paddle.body.x - 50, this.paddle.body.y - 22),
-                new Ball(game, this.paddle.body.x - 50, this.paddle.body.y - 22)
+                new Ball(game, this.paddle.body.x, this.paddle.body.y - 11),
+                new Ball(game, this.paddle.body.x, this.paddle.body.y - 11),
+                new Ball(game, this.paddle.body.x, this.paddle.body.y - 11)
             ];
             this.balls.addMultiple(ballArray);
             this.balls.forEach(function(ball) {
@@ -105,9 +106,9 @@ define([
             // ball
             game.time.events.add(Phaser.Timer.SECOND * 2, function() {
                 readyText.destroy();
-                this.paddle.reset(game.world.centerX - 50, game.world.height - 25);
+                this.paddle.reset(game.world.centerX, game.world.height - 25);
                 this.ballOnPaddle = true;
-                this.balls.getChildAt(0).reset(this.paddle.body.x + 50, this.paddle.body.y - 22);
+                this.balls.getChildAt(0).reset(this.paddle.body.x, this.paddle.body.y - 11);
             }, this);
         },
         update: function() {
@@ -127,9 +128,9 @@ define([
             // paddle motion
             this.paddle.body.velocity.x = 0;
             if (this.cursors.left.isDown) {
-                this.paddle.body.velocity.x = -400;
+                this.paddle.body.velocity.x = -500;
             } else if (this.cursors.right.isDown) {
-                this.paddle.body.velocity.x = 400;
+                this.paddle.body.velocity.x = 500;
             }
 
             if (this.cursors.down.isDown && this.ballOnPaddle) {
@@ -153,10 +154,22 @@ define([
         releaseBall: function() {
             this.ballOnPaddle = false;
             var activeBall = this.balls.getChildAt(0);
-            activeBall.body.velocity.x = 177;
-            activeBall.body.velocity.y = -177;
+            activeBall.body.velocity.x = 300;
+            activeBall.body.velocity.y = -300;
         },
-        hitPaddle: function() {
+        /**
+         * Collision is group vs sprite, so sprite must be the first argument
+         */
+        hitPaddle: function(paddle, ball) {
+            // bounce behaviour depends on where on the point of impact
+            var xoffset = ball.x - paddle.x;
+
+            if (xoffset > 25) {
+                game.physics.arcade.velocityFromAngle(-45, 424, ball.body.velocity);
+            } else if (xoffset < -25) {
+                game.physics.arcade.velocityFromAngle(-135, 424, ball.body.velocity);
+            } 
+
             this.bump.play();
         },
         hitBlock: function(ball, block) {

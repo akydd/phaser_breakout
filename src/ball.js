@@ -4,6 +4,8 @@ define(['phaser'], function(Phaser) {
     var Ball = function(game, x, y) {
         Phaser.Sprite.call(this, game, x, y, 'ball');
 
+        this.anchor.setTo(0.5);
+
         game.physics.arcade.enableBody(this);
 
         // the ball should bounce off the edges of the world
