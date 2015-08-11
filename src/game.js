@@ -53,16 +53,26 @@ define([
             this.paddle.body.immovable = true;
             this.paddle.body.collideWorldBounds = true;
 
-            // 3 balls in total
+            // powerups
+            this.powerupLaser = game.add.group();
+            this.powerupLaser.classType = Powerup;
+            this.powerupLaser.createMultiple(5, 'laser');
+            this.powerupDisrupt = game.add.group();
+            this.powerupDisrupt.classType = Powerup;
+            this.powerupDisrupt.createMultiple(5, 'disrupt');
+            this.powerupCatch = game.add.group();
+            this.powerupCatch.classType = Powerup;
+            this.powerupCatch.createMultiple(5, 'catch');
+            this.powerups = game.add.group();
+            this.powerups.add(this.powerupLaser);
+            this.powerups.add(this.powerupDisrupt);
+            this.powerups.add(this.powerupCatch);
+
+            // balls
             this.balls = game.add.group();
-            var ballArray = [
-                new Ball(game, this.paddle.body.x, this.paddle.body.y - 11),
-                new Ball(game, this.paddle.body.x, this.paddle.body.y - 11),
-                new Ball(game, this.paddle.body.x, this.paddle.body.y - 11)
-            ];
-            this.balls.addMultiple(ballArray);
+            this.balls.classType = Ball;
+            this.balls.createMultiple(3, 'ball');
             this.balls.forEach(function(ball) {
-                ball.kill(); // They are not dead by default!
                 ball.events.onOutOfBounds.add(this.ballLost, this);
             }, this);
 
@@ -149,7 +159,9 @@ define([
             game.physics.arcade.collide(this.balls, this.blocks, this.hitBlock, null, this);
 
             // powerup paddle collistion
-            game.physics.arcade.collide(this.powerup, this.paddle, this.hitPowerup, null, this);
+            game.physics.arcade.collide(this.powerupLaser, this.paddle, this.hitPowerupLaser, null, this);
+            game.physics.arcade.collide(this.powerupDisrupt, this.paddle, this.hitPowerupDisrupt, null, this);
+            game.physics.arcade.collide(this.powerupCatch, this.paddle, this.hitPowerupCatch, null, this);
         },
         releaseBall: function() {
             this.ballOnPaddle = false;
@@ -187,14 +199,21 @@ define([
             }
         },
         dropPowerUp: function(block) {
-            var powerupTypes = ['disrupt', 'catch', 'laser'];
-            var powerupType = powerupTypes[game.rnd.integerInRange(0, 2)];
-            
-            this.powerup = new Powerup(game, block.x, block.y, powerupType);
-            game.add.existing(this.powerup);
+            var powerupType = this.powerups.getRandom();
+            var powerup = powerupType.getFirstExists(false);
+            powerup.reset(block.x, block.y);
+            powerup.body.velocity.y = 200;
         },
-        hitPowerup: function(powerup) {
-            console.log(powerup.type);
+        hitPowerupLaser: function(paddle, powerup) {
+            console.log("Fire lasers!");
+            powerup.kill();
+        },
+        hitPowerupDisrupt: function(paddle, powerup) {
+            console.log("Too many balls!");
+            powerup.kill();
+        },
+        hitPowerupCatch: function(paddle, powerup) {
+            console.log("I gotcha!");
             powerup.kill();
         },
         ballLost: function(ball) {
