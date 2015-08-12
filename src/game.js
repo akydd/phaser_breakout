@@ -119,6 +119,7 @@ define([
                 this.paddle.reset(game.world.centerX, game.world.height - 25);
                 this.ballOnPaddle = true;
                 this.balls.getChildAt(0).reset(this.paddle.body.x, this.paddle.body.y - 11);
+                this.powerupsAllowed = true;
             }, this);
         },
         update: function() {
@@ -193,8 +194,10 @@ define([
                 this.scoreText.text = "Score: " + this.score;
 
                 // 1 in 4 chance for a powerup
-                if(game.rnd.integerInRange(1, 4) === 1) {
-                    this.dropPowerUp(block);
+                if (this.powerupsAllowed) {
+                    if(game.rnd.integerInRange(1, 4) === 1) {
+                        this.dropPowerUp(block);
+                    }
                 }
             }
         },
@@ -209,8 +212,25 @@ define([
             powerup.kill();
         },
         hitPowerupDisrupt: function(paddle, powerup) {
-            console.log("Too many balls!");
+            this.powerupsAllowed = false;
             powerup.kill();
+            
+            // enable two other balls
+            var liveBall = this.balls.getFirstAlive();
+            var x = liveBall.body.velocity.x;
+            var y = liveBall.body.velocity.y;
+
+            // orignal ball trajectory rotated by 30 degrees
+            var ball2 = this.balls.getFirstDead();
+            ball2.reset(liveBall.x, liveBall.y);
+            ball2.body.velocity.x = x * 0.866 - y/2;
+            ball2.body.velocity.y = x/2 + y * 0.866;
+
+            // original ball trajectory rotated by -30 degrees
+            var ball3 = this.balls.getFirstDead();
+            ball3.reset(liveBall.x, liveBall.y);
+            ball3.body.velocity.x = x * 0.866 + y/2;
+            ball3.body.velocity.y = -x/2 + y * 0.866;
         },
         hitPowerupCatch: function(paddle, powerup) {
             console.log("I gotcha!");
@@ -218,6 +238,10 @@ define([
         },
         ballLost: function(ball) {
             ball.kill();
+
+            if (this.balls.countLiving() === 1) {
+                this.powerupsAllowed = true;
+            }
 
             if (this.balls.countLiving() === 0) {
                 this.lives--;
