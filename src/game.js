@@ -20,6 +20,14 @@ define([
 
     Game.prototype = {
         currentLevel: 0,
+        textStyle: {
+            font: '20px karmatic_arcaderegular',
+            fill: '#000000'
+        },
+        bigTextStyle: {
+            font: '80px karmatic_arcaderegular',
+            fill: '#000000'
+        },
         buildLevel: function(level) {
             // the blocks dimensions and padding
             var blockX = 77;
@@ -39,21 +47,15 @@ define([
                 }
             }
         },
-        create: function() { 
-            game.add.sprite(0, 0, 'background');
-
-            // blocks
-            this.blocks = game.add.group();
-
-            // the paddle
+        createPaddle: function() {
             this.paddle = game.add.sprite(game.world.centerX, game.world.height - 25, 'paddle');
             this.paddle.anchor.setTo(0.5);
             game.physics.arcade.enable(this.paddle);
             // paddle should not move when ball hits it
             this.paddle.body.immovable = true;
             this.paddle.body.collideWorldBounds = true;
-
-            // powerups
+        },
+        createPowerups: function() {
             this.powerupLaser = game.add.group();
             this.powerupLaser.classType = Powerup;
             this.powerupLaser.createMultiple(5, 'laser');
@@ -67,23 +69,34 @@ define([
             this.powerups.add(this.powerupLaser);
             this.powerups.add(this.powerupDisrupt);
             this.powerups.add(this.powerupCatch);
-
-            // balls
+        },
+        createBalls: function() {
             this.balls = game.add.group();
             this.balls.classType = Ball;
             this.balls.createMultiple(3, 'ball');
             this.balls.forEach(function(ball) {
                 ball.events.onOutOfBounds.add(this.ballLost, this);
             }, this);
-
+        },
+        createStatusBar: function() {
             // the score
             this.score = 0;
-            var textStyle = {font: '20px karmatic_arcaderegular', fill: '#000000'};
-            this.scoreText = game.add.text(20, 20, "Score " + this.score, textStyle);
+            this.scoreText = game.add.text(20, 20, "Score " + this.score, this.textStyle);
 
             // lives
             this.lives = 3;
-            this.livesText = game.add.text(20, 50, "Lives " + this.lives, textStyle);
+            this.livesText = game.add.text(20, 50, "Lives " + this.lives, this.textStyle);
+        },
+        create: function() { 
+            game.add.sprite(0, 0, 'background');
+
+            // blocks
+            this.blocks = game.add.group();
+
+            this.createPaddle();
+            this.createPowerups();
+            this.createBalls();
+            this.createStatusBar();
 
             // get ready for keyboard input
             this.cursors = game.input.keyboard.createCursorKeys();
@@ -97,18 +110,16 @@ define([
         pause: function() {
             if (game.paused) {
                 game.paused = false;
-                this.pauseText.destroy();
+                this.pauseText.destroy(); // text can't be killed, only destroyed
             } else {
                 game.paused = true;
-                var textStyle = {font: '80px karmatic_arcaderegular', fill: '#000000'};
-                this.pauseText = game.add.text(401, 300, "Paused", textStyle);
+                this.pauseText = game.add.text(401, 300, "Paused", this.bigTextStyle);
                 this.pauseText.anchor.x = 0.5;
                 this.pauseText.anchor.y = 0.5;
             }
         },
         ready: function() {
-            var textStyle = {font: '80px karmatic_arcaderegular', fill: '#000000'};
-            var readyText = game.add.text(401, 300, "Ready!", textStyle);
+            var readyText = game.add.text(401, 300, "Ready!", this.bigTextStyle);
             readyText.anchor.x = 0.5;
             readyText.anchor.y = 0.5;
         
@@ -128,8 +139,8 @@ define([
                 this.buildLevel(Levels.getLevel(this.currentLevel));
                 this.currentLevel++;
 
+                // clear/reset the game
                 this.disablePaddle();
-                // there may be more than 1 ball in play.
                 this.disableActiveBalls();
 
                 // Ready
@@ -220,13 +231,13 @@ define([
             var x = liveBall.body.velocity.x;
             var y = liveBall.body.velocity.y;
 
-            // orignal ball trajectory rotated by 30 degrees
+            // rotate second ball trajectory by 30 degrees
             var ball2 = this.balls.getFirstDead();
             ball2.reset(liveBall.x, liveBall.y);
             ball2.body.velocity.x = x * 0.866 - y/2;
             ball2.body.velocity.y = x/2 + y * 0.866;
 
-            // original ball trajectory rotated by -30 degrees
+            // rotate third ball trajectory by -30 degrees
             var ball3 = this.balls.getFirstDead();
             ball3.reset(liveBall.x, liveBall.y);
             ball3.body.velocity.x = x * 0.866 + y/2;
@@ -267,8 +278,7 @@ define([
         gameOver: function() {
             this.disablePaddle();
             
-            var textStyle = {font: '80px karmatic_arcaderegular', fill: '#000000'};
-            var gameOverText = game.add.text(401, 300, "Game Over!", textStyle);
+            var gameOverText = game.add.text(401, 300, "Game Over!", this.bigTextStyle);
             gameOverText.anchor.x = 0.5;
             gameOverText.anchor.y = 0.5;
             
