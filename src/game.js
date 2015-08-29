@@ -151,9 +151,9 @@ define([
             // paddle motion
             this.paddle.body.velocity.x = 0;
             if (this.cursors.left.isDown) {
-                this.paddle.body.velocity.x = -500;
+                this.paddle.body.velocity.x = -600;
             } else if (this.cursors.right.isDown) {
-                this.paddle.body.velocity.x = 500;
+                this.paddle.body.velocity.x = 600;
             }
 
             if (this.cursors.down.isDown && this.ballOnPaddle) {
@@ -204,6 +204,15 @@ define([
             if (!block.alive) {
                 this.score += block.score;
                 this.scoreText.text = "Score: " + this.score;
+
+                // score notification
+                var hitText = game.add.text(block.x, block.y, block.score, this.textStyle);
+                game.add.tween(hitText).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
+                game.add.tween(hitText).to({y: 0}, 3000, Phaser.Easing.Linear.None, true);
+
+                game.time.events.add(1000, function() {
+                    hitText.destroy();
+                });
 
                 // 1 in 4 chance for a powerup
                 if (this.powerupsAllowed) {
