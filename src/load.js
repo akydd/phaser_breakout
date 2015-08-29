@@ -6,10 +6,14 @@ define(['phaser-game'], function(game) {
 
     Load.prototype = {
         preload: function() {
+            var textStyle = {font: '20px karmatic_arcaderegular', fill: '#ffffff'};
+            var loadingText = game.add.text(game.world.centerX, game.world.centerY - 40, "loading...", textStyle);
             var loadingBar = game.add.sprite(game.world.centerX, game.world.centerY, 'loadingBar');
+            var loadingOutline = game.add.sprite(game.world.centerX, game.world.centerY, 'loadingOutline');
+
+            loadingText.anchor.setTo(0.5, 0.5);
             loadingBar.anchor.setTo(0.5, 0.5);
-            loadingBar.scale.x = 6;
-            loadingBar.scale.y = 1;
+            loadingOutline.anchor.setTo(0.5, 0.5);
 
             game.load.setPreloadSprite(loadingBar);
 

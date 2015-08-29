@@ -6,7 +6,8 @@ define(['phaser-game'], function(game) {
 
     Boot.prototype = {
         preload: function() {
-            game.load.image('loadingBar', 'assets/bricks/blue.png');
+            game.load.image('loadingBar', 'assets/loadingbar.png');
+            game.load.image('loadingOutline', 'assets/loadingoutline.png');
 
             game.physics.startSystem(Phaser.Physics.ARCADE);
             game.physics.arcade.checkCollision.down = false;
