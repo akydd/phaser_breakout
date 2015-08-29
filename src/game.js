@@ -142,6 +142,7 @@ define([
                 // clear/reset the game
                 this.disablePaddle();
                 this.disableActiveBalls();
+                this.removeFallingPowerups();
 
                 // Ready
                 this.ready();
@@ -223,8 +224,12 @@ define([
             powerup.kill();
         },
         hitPowerupDisrupt: function(paddle, powerup) {
-            this.powerupsAllowed = false;
             powerup.kill();
+
+            // no other powerups are allowed to drop, but ones that have already dropped
+            // must also be killed.
+            this.powerupsAllowed = false;
+            this.removeFallingPowerups();
             
             // enable two other balls
             var liveBall = this.balls.getFirstAlive();
@@ -262,6 +267,7 @@ define([
                     this.gameOver();
                 } else {
                     this.disablePaddle();
+                    this.removeFallingPowerups();
                     this.ready();
                 }
             }
@@ -275,8 +281,22 @@ define([
                 ball.kill();
             });
         },
+        removeFallingPowerups: function() {
+            this.powerupLaser.forEachAlive(function(powerup) {
+               powerup.kill();
+            });
+
+            this.powerupDisrupt.forEachAlive(function(powerup) {
+                powerup.kill();
+            });
+
+            this.powerupCatch.forEachAlive(function(powerup) {
+                powerup.kill();
+            });
+        },
         gameOver: function() {
             this.disablePaddle();
+            this.removeFallingPowerups();
             
             var gameOverText = game.add.text(401, 300, "Game Over!", this.bigTextStyle);
             gameOverText.anchor.x = 0.5;
