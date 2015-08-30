@@ -207,12 +207,17 @@ define([
 
                 // score notification
                 var hitText = game.add.text(block.x, block.y, block.score, this.textStyle);
-                game.add.tween(hitText).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
-                game.add.tween(hitText).to({y: 0}, 3000, Phaser.Easing.Linear.None, true);
+                hitText.anchor.x = 0.5;
+                hitText.anchor.y = 0.5;
+                hitText.scale.x = 0;
+                hitText.scale.y = 0;
+                var scale = block.score/80; // higher scores === larger text
+                var tweenIn = game.add.tween(hitText.scale).to({x: scale, y: scale}, 400, Phaser.Easing.Linear.None, true, 0, 0, true);
 
-                game.time.events.add(1000, function() {
-                    hitText.destroy();
-                });
+                // TODO: figure out how to delete text once tween in complete
+                // tweenIn.onLoop.add(function(hitText, tween) {
+                //     hitText.destroy();
+                //}, this);
 
                 // 1 in 4 chance for a powerup
                 if (this.powerupsAllowed) {
