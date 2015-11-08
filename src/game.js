@@ -65,7 +65,9 @@ define([
             this.powerupCatch = game.add.group();
             this.powerupCatch.classType = Powerup;
             this.powerupCatch.createMultiple(5, 'catch');
+
             this.powerups = game.add.group();
+
             this.powerups.add(this.powerupLaser);
             this.powerups.add(this.powerupDisrupt);
             this.powerups.add(this.powerupCatch);
@@ -76,6 +78,14 @@ define([
             this.balls.createMultiple(3, 'ball');
             this.balls.forEach(function(ball) {
                 ball.events.onOutOfBounds.add(this.ballLost, this);
+            }, this);
+        },
+        createBullets: function() {
+            this.bullets = game.add.group();
+            this.bullets.classType = Bullet;
+            this.bullets.createMultiple(50, 'bullet');
+            this.bullets.forEach(function(bullet) {
+                bullet.events.onOutOfBounds.add(this.todo, this);
             }, this);
         },
         createStatusBar: function() {
@@ -102,6 +112,7 @@ define([
             this.cursors = game.input.keyboard.createCursorKeys();
             this.pauseKey = game.input.keyboard.addKey(Phaser.Keyboard.P);
             this.pauseKey.onDown.add(this.pause, this);
+            this.powerupKey = game.input.keyboard.addKey(Phaser.Keyboard.Z);
 
             // sounds
             this.bump = game.add.audio('bump');
@@ -130,7 +141,7 @@ define([
                 this.paddle.reset(game.world.centerX, game.world.height - 25);
                 this.ballOnPaddle = true;
                 this.balls.getChildAt(0).reset(this.paddle.body.x, this.paddle.body.y - 11);
-                this.powerupsAllowed = true;
+                this.activePowerup = null;
             }, this);
         },
         update: function() {
@@ -154,6 +165,14 @@ define([
                 this.paddle.body.velocity.x = -600;
             } else if (this.cursors.right.isDown) {
                 this.paddle.body.velocity.x = 600;
+            }
+
+            // power ups:
+            // lasers
+            if (this.activePowerup === 'LASER') {
+                if (this.powerupKey.isDown) {
+                    console.log('FIRE LAZERS!!');
+                }
             }
 
             if (this.cursors.down.isDown && this.ballOnPaddle) {
@@ -219,8 +238,9 @@ define([
                 //     hitText.destroy();
                 //}, this);
 
-                // 1 in 4 chance for a powerup
-                if (this.powerupsAllowed) {
+                // 1 in 4 chance for a powerup, when disrupt powerup is not
+                // active
+                if (this.activePowerup !== 'DISRUPT') {
                     if(game.rnd.integerInRange(1, 4) === 1) {
                         this.dropPowerUp(block);
                     }
@@ -235,14 +255,14 @@ define([
         },
         hitPowerupLaser: function(paddle, powerup) {
             console.log("Fire lasers!");
+            this.activePowerup = 'LASER';
             powerup.kill();
         },
         hitPowerupDisrupt: function(paddle, powerup) {
+            this.activePowerup = 'DISRUPT';
             powerup.kill();
 
-            // no other powerups are allowed to drop, but ones that have already dropped
-            // must also be killed.
-            this.powerupsAllowed = false;
+            // powerups that have already dropped must also be killed.
             this.removeFallingPowerups();
             
             // enable two other balls
@@ -264,13 +284,14 @@ define([
         },
         hitPowerupCatch: function(paddle, powerup) {
             console.log("I gotcha!");
+            this.activePowerup = 'CATCH';
             powerup.kill();
         },
         ballLost: function(ball) {
             ball.kill();
 
             if (this.balls.countLiving() === 1) {
-                this.powerupsAllowed = true;
+                this.activePowerup = null;
             }
 
             if (this.balls.countLiving() === 0) {
