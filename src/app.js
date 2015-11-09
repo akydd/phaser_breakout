@@ -22,7 +22,8 @@
         'game',
         'levels',
         'powerup',
-        'ball'
+        'ball',
+        'bullet'
     ], function (
         Phaser,
         Game,
@@ -32,7 +33,8 @@
         Play,
         Levels,
         Powerup,
-        Ball
+        Ball,
+        Bullet
     ) {
         Game.state.add('Boot', Boot);
         Game.state.add('Load', Load);

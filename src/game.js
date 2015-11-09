@@ -4,14 +4,16 @@ define([
     'brick',
     'levels',
     'powerup',
-    'ball'
+    'ball',
+    'bullet'
 ], function(
     Phaser, 
     game,
     Brick,
     Levels,
     Powerup,
-    Ball
+    Ball,
+    Bullet
 ) {
     'use strict';
 
@@ -84,9 +86,11 @@ define([
             this.bullets = game.add.group();
             this.bullets.classType = Bullet;
             this.bullets.createMultiple(50, 'bullet');
-            this.bullets.forEach(function(bullet) {
-                bullet.events.onOutOfBounds.add(this.todo, this);
-            }, this);
+//            this.bullets.forEach(function(bullet) {
+//                bullet.events.onOutOfBounds.add(this.todo, this);
+//            }, this);
+
+            this.nextShotAt = 0;
         },
         createStatusBar: function() {
             // the score
@@ -106,6 +110,7 @@ define([
             this.createPaddle();
             this.createPowerups();
             this.createBalls();
+            this.createBullets();
             this.createStatusBar();
 
             // get ready for keyboard input
@@ -171,7 +176,7 @@ define([
             // lasers
             if (this.activePowerup === 'LASER') {
                 if (this.powerupKey.isDown) {
-                    console.log('FIRE LAZERS!!');
+                    this.fireLaser();
                 }
             }
 
@@ -188,12 +193,33 @@ define([
             game.physics.arcade.collide(this.balls, this.paddle, this.hitPaddle, null, this);
 
             // ball block collision
-            game.physics.arcade.collide(this.balls, this.blocks, this.hitBlock, null, this);
+            game.physics.arcade.collide(this.balls, this.blocks, this.ballHitBlock, null, this);
 
             // powerup paddle collistion
             game.physics.arcade.collide(this.powerupLaser, this.paddle, this.hitPowerupLaser, null, this);
             game.physics.arcade.collide(this.powerupDisrupt, this.paddle, this.hitPowerupDisrupt, null, this);
             game.physics.arcade.collide(this.powerupCatch, this.paddle, this.hitPowerupCatch, null, this);
+
+            // bullet block collision
+            game.physics.arcade.collide(this.bullets, this.blocks, this.bulletHitBlock, null, this)
+        },
+        fireLaser: function() {
+            var shotDelay = 300; // shots are fires 100 milliseconds apart
+
+            if (this.nextShotAt > this.time.now) {
+                return;
+            }
+
+            var bullet1 = this.bullets.getFirstExists(false);
+            bullet1.reset(this.paddle.x - 40, this.paddle.y);
+
+            var bullet2 = this.bullets.getFirstExists(false);
+            bullet2.reset(this.paddle.x + 40, this.paddle.y);
+
+            bullet1.body.velocity.y = -400;
+            bullet2.body.velocity.y = -400;
+
+            this.nextShotAt = this.time.now + shotDelay;
         },
         releaseBall: function() {
             this.ballOnPaddle = false;
@@ -216,8 +242,15 @@ define([
 
             this.bump.play();
         },
-        hitBlock: function(ball, block) {
+        bulletHitBlock: function(bullet, block) {
+            this.hitBlock(block);
+            bullet.kill();
+        },
+        ballHitBlock: function(ball, block) {
             this.blockHit.play();
+            this.hitBlock(block);
+        },
+        hitBlock: function(block) {
             block.damage(1);
 
             if (!block.alive) {
