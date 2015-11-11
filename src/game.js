@@ -122,6 +122,7 @@ define([
             // sounds
             this.bump = game.add.audio('bump');
             this.blockHit = game.add.audio('block_hit');
+            this.laser = game.add.audio('laser');
         },
         pause: function() {
             if (game.paused) {
@@ -219,6 +220,8 @@ define([
             bullet1.body.velocity.y = -400;
             bullet2.body.velocity.y = -400;
 
+            this.laser.play();
+
             this.nextShotAt = this.time.now + shotDelay;
         },
         releaseBall: function() {
@@ -287,7 +290,6 @@ define([
             powerup.body.velocity.y = 200;
         },
         hitPowerupLaser: function(paddle, powerup) {
-            console.log("Fire lasers!");
             this.activePowerup = 'LASER';
             powerup.kill();
         },
