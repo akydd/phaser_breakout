@@ -342,6 +342,7 @@ define([
                 } else {
                     this.disablePaddle();
                     this.removeFallingPowerups();
+                    this.removeBullets();
                     this.ready();
                 }
             }
@@ -353,6 +354,11 @@ define([
         disableActiveBalls: function() {
             this.balls.forEachAlive(function(ball) {
                 ball.kill();
+            });
+        },
+        removeBullets: function() {
+            this.bullets.forEachAlive(function(bullet) {
+                bullet.kill();
             });
         },
         removeFallingPowerups: function() {
@@ -371,6 +377,7 @@ define([
         gameOver: function() {
             this.disablePaddle();
             this.removeFallingPowerups();
+            this.removeBullets();
             
             var gameOverText = game.add.text(401, 300, "Game Over!", this.bigTextStyle);
             gameOverText.anchor.x = 0.5;
