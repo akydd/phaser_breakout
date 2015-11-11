@@ -29,14 +29,18 @@ define(['phaser-game'], function(game) {
             titleText.anchor.x = 0.5;
             titleText.anchor.y = 0.5;
 
-            var controlsString = "Up arrow to start\nLeft and right arrows to move\n'P' to pause";
+            var controlsString = "Up arrow to start\nLeft and right arrows to move\n'P' to pause\n'Z' to fire lasers";
             var controlsText = game.add.text(game.world.centerX, game.world.centerY + 100, controlsString, textStyle);
             controlsText.anchor.x = 0.5;
             controlsText.anchor.y = 0.5;
 
-            var creditText = game.add.text(game.world.centerX, game.world.centerY + 200, "Artwork by www.unluckystudio.com", textStyle);
-            creditText.anchor.x = 0.5;
-            creditText.anchor.y = 0.5;
+            var artCreditText = game.add.text(game.world.centerX, game.world.centerY + 200, "Artwork by www.unluckystudio.com", textStyle);
+            artCreditText.anchor.x = 0.5;
+            artCreditText.anchor.y = 0.5;
+
+            var soundCreditText = game.add.text(game.world.centerX, game.world.centerY + 230, "Audio FX by Tim Gormly", textStyle);
+            soundCreditText.anchor.x = 0.5;
+            soundCreditText.anchor.y = 0.5;
 
             this.cursor = game.input.keyboard.createCursorKeys();
         },
