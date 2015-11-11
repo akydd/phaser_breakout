@@ -38,6 +38,7 @@ define(['phaser-game'], function(game) {
             game.load.audio('bump', 'assets/audio/bump.ogg', true);
             game.load.audio('block_hit', 'assets/audio/block_hit.ogg', true);
             game.load.audio('laser', 'assets/audio/laser.ogg', true);
+            game.load.audio('powerup', 'assets/audio/powerup.ogg', true);
         },
         update: function() {
             if (game.cache.isSoundDecoded('track')) {

@@ -120,9 +120,10 @@ define([
             this.powerupKey = game.input.keyboard.addKey(Phaser.Keyboard.Z);
 
             // sounds
-            this.bump = game.add.audio('bump');
-            this.blockHit = game.add.audio('block_hit');
-            this.laser = game.add.audio('laser');
+            this.bumpSound = game.add.audio('bump');
+            this.blockHitSound = game.add.audio('block_hit');
+            this.laserSound = game.add.audio('laser');
+            this.powerupSound = game.add.audio('powerup');
         },
         pause: function() {
             if (game.paused) {
@@ -196,7 +197,7 @@ define([
             // ball block collision
             game.physics.arcade.collide(this.balls, this.blocks, this.ballHitBlock, null, this);
 
-            // powerup paddle collistion
+            // powerup paddle collision
             game.physics.arcade.collide(this.powerupLaser, this.paddle, this.hitPowerupLaser, null, this);
             game.physics.arcade.collide(this.powerupDisrupt, this.paddle, this.hitPowerupDisrupt, null, this);
             game.physics.arcade.collide(this.powerupCatch, this.paddle, this.hitPowerupCatch, null, this);
@@ -220,7 +221,7 @@ define([
             bullet1.body.velocity.y = -400;
             bullet2.body.velocity.y = -400;
 
-            this.laser.play();
+            this.laserSound.play();
 
             this.nextShotAt = this.time.now + shotDelay;
         },
@@ -243,14 +244,14 @@ define([
                 game.physics.arcade.velocityFromAngle(-135, 424, ball.body.velocity);
             } 
 
-            this.bump.play();
+            this.bumpSound.play();
         },
         bulletHitBlock: function(bullet, block) {
             this.hitBlock(block);
             bullet.kill();
         },
         ballHitBlock: function(ball, block) {
-            this.blockHit.play();
+            this.blockHitSound.play();
             this.hitBlock(block);
         },
         hitBlock: function(block) {
@@ -292,10 +293,12 @@ define([
         hitPowerupLaser: function(paddle, powerup) {
             this.activePowerup = 'LASER';
             powerup.kill();
+            this.powerupSound.play();
         },
         hitPowerupDisrupt: function(paddle, powerup) {
             this.activePowerup = 'DISRUPT';
             powerup.kill();
+            this.powerupSound.play();
 
             // powerups that have already dropped must also be killed.
             this.removeFallingPowerups();
@@ -321,6 +324,7 @@ define([
             console.log("I gotcha!");
             this.activePowerup = 'CATCH';
             powerup.kill();
+            this.powerupSound.play();
         },
         ballLost: function(ball) {
             ball.kill();
