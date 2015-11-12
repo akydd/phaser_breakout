@@ -29,7 +29,6 @@ define(['phaser-game'], function(game) {
             game.load.image('block_violet', 'assets/bricks/violet.png');
             
             game.load.image('disrupt', 'assets/powerups/star_yellow.png');
-            game.load.image('catch', 'assets/powerups/star_green.png');
             game.load.image('laser', 'assets/powerups/star_red.png');
 
             game.load.image('bullet', 'assets/powerups/bullet.png');

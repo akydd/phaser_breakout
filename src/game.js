@@ -64,15 +64,11 @@ define([
             this.powerupDisrupt = game.add.group();
             this.powerupDisrupt.classType = Powerup;
             this.powerupDisrupt.createMultiple(5, 'disrupt');
-            this.powerupCatch = game.add.group();
-            this.powerupCatch.classType = Powerup;
-            this.powerupCatch.createMultiple(5, 'catch');
 
             this.powerups = game.add.group();
 
             this.powerups.add(this.powerupLaser);
             this.powerups.add(this.powerupDisrupt);
-            this.powerups.add(this.powerupCatch);
         },
         createBalls: function() {
             this.balls = game.add.group();
@@ -200,7 +196,6 @@ define([
             // powerup paddle collision
             game.physics.arcade.collide(this.powerupLaser, this.paddle, this.hitPowerupLaser, null, this);
             game.physics.arcade.collide(this.powerupDisrupt, this.paddle, this.hitPowerupDisrupt, null, this);
-            game.physics.arcade.collide(this.powerupCatch, this.paddle, this.hitPowerupCatch, null, this);
 
             // bullet block collision
             game.physics.arcade.collide(this.bullets, this.blocks, this.bulletHitBlock, null, this)
@@ -320,12 +315,6 @@ define([
             ball3.body.velocity.x = x * 0.866 + y/2;
             ball3.body.velocity.y = -x/2 + y * 0.866;
         },
-        hitPowerupCatch: function(paddle, powerup) {
-            console.log("I gotcha!");
-            this.activePowerup = 'CATCH';
-            powerup.kill();
-            this.powerupSound.play();
-        },
         ballLost: function(ball) {
             ball.kill();
 
@@ -367,10 +356,6 @@ define([
             });
 
             this.powerupDisrupt.forEachAlive(function(powerup) {
-                powerup.kill();
-            });
-
-            this.powerupCatch.forEachAlive(function(powerup) {
                 powerup.kill();
             });
         },
