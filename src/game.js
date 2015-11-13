@@ -144,7 +144,6 @@ define([
                 this.paddle.reset(game.world.centerX, game.world.height - 25);
                 this.ballOnPaddle = true;
                 this.balls.getChildAt(0).reset(this.paddle.body.x, this.paddle.body.y - 11);
-                this.activePowerup = null;
             }, this);
         },
         update: function() {
@@ -323,6 +322,8 @@ define([
             }
 
             if (this.balls.countLiving() === 0) {
+                this.activePowerup = null;
+
                 this.lives--;
                 this.livesText.text = "Lives: " + this.lives;
 
