@@ -4,7 +4,7 @@
     requirejs.config({
         baseUrl: 'src/',
         paths: {
-            phaser: 'libs/phaser/build/phaser'
+            phaser: 'libs/phaser/build/phaser.min'
         },
         shim: {
             'phaser': {
