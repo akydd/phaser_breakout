@@ -6,7 +6,10 @@
   },
   "name": "breakout",
   "description": "* Made with [Phaser](http://phaser.io/) * Art work by [Sujit Yadav](http://www.unluckystudio.com) * Audio FX by [Tim Gormly](https://www.freesound.org/people/timgormly/)",
-  "version": "0.0.0",
+  "version": "0.0.1",
+  "engines": {
+      "node": "8.1.4"
+  },
   "main": "web.js",
   "dependencies": {
     "express": "^4.13.3",
